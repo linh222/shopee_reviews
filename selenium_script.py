@@ -1,21 +1,24 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-import time
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get(
-    'https://shopee.vn/Son-Kem-Perfect-Diary-M%C3%A0u-L%C3%AC-T%C3%B4ng-M%C3%A0u-C%E1%BB%95-%C4%90i%E1%BB%83n-L%C3%A2u-Tr%C3%B4i-2.5g-i.277411443.7254565873?sp_atk=a68e6490-46b2-4da8-9f26-affa04027d69')
+    'https://shopee.vn/Son-Kem-Perfect-Diary-M%C3%A0u-L%C3%AC-T%C3%B4ng-M%C3%A0u-C%E1%BB%95-%C4%90i%E1%BB%83n-L%C3'
+    '%A2u-Tr%C3%B4i-2.5g-i.277411443.7254565873?sp_atk=a68e6490-46b2-4da8-9f26-affa04027d69')
 
 comment = list()
 variation = []
 rating = []
-datetime=[]
+datetime = []
+n = 5  # number of page to load, 6 comment each page
 try:
 
-    for i in range(5):
+    for i in range(n):
 
         # load page
         time.sleep(10)
@@ -40,14 +43,15 @@ try:
 
         ratings_list = driver.find_elements(By.CLASS_NAME, 'shopee-product-rating')
         for rating_element in ratings_list:
-            rating.append(len(rating_element.find_elements(By.XPATH, ".//*[@class = 'shopee-svg-icon icon-rating-solid--active icon-rating-solid']")))
+            rating.append(len(rating_element.find_elements(By.XPATH, ".//*[@class = 'shopee-svg-icon "
+                                                                     "icon-rating-solid--active icon-rating-solid']")))
 
-        # next page
-        buttom = driver.find_element(By.XPATH, "//button[@class='shopee-icon-button shopee-icon-button--right ']")
-        buttom.click()
+            # next page
+        button = driver.find_element(By.XPATH, "//button[@class='shopee-icon-button shopee-icon-button--right ']")
+        button.click()
         time.sleep(10)
     # driver.quit()
 finally:
-    
+
     # Thêm code lưu data sang dataframe ở đây
     driver.quit()
