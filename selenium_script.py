@@ -11,14 +11,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get(
-    'https://shopee.vn/Son-Kem-Perfect-Diary-M%C3%A0u-L%C3%AC-T%C3%B4ng-M%C3%A0u-C%E1%BB%95-%C4%90i%E1%BB%83n-L%C3'
-    '%A2u-Tr%C3%B4i-2.5g-i.277411443.7254565873?sp_atk=a68e6490-46b2-4da8-9f26-affa04027d69')
+    'https://shopee.vn/product/9277307/2288984704?smtt=0.31320430-1642307124.9&fbclid'
+    '=IwAR2ImR10gU6NF_QyV1CNhwptBh57LogiebxvYj3LHdIsYthYFrrAk1rGP-Q '
+)
 
 comment = []
 variation = []
 rating = []
 datetime = []
 tag_name = []
+count = 0
 n = 100  # number of page to load, 6 comments each page
 try:
 
@@ -37,14 +39,18 @@ try:
 
             button = rating_filter.find_element(By.XPATH, ".//div[starts-with(text(), 'Có Bình luận')]")
             button.click()
-        else:
-            driver.execute_script("window.scrollTo(0, window.scrollY + 1200)")
-        time.sleep(5)
+
+        time.sleep(3)
 
         # collect comment
-        comments = driver.find_elements(By.CLASS_NAME, '_3NrdYc')
-        for cmt in comments:
-            comment.append(cmt.text)
+        product = driver.find_elements(By.CLASS_NAME, 'shopee-product-rating__main')
+
+        for ele in product:
+            try:
+                comment.append(ele.find_element(By.XPATH, ".//*[@class = '_3NrdYc']").text)
+
+            except:
+                comment.append('NULL')
 
         variations = driver.find_elements(By.CLASS_NAME, 'shopee-product-rating__variation')
         for var in variations:
@@ -61,6 +67,12 @@ try:
 
         # next page
         button = driver.find_element(By.XPATH, "//button[@class='shopee-icon-button shopee-icon-button--right ']")
+        current_last_button = driver.find_elements(By.XPATH,
+                                                   "//button[@class='shopee-button-no-outline shopee-button-no-outline--non-click']")
+        if len(current_last_button) == 1 and i > 10:
+            count += 1
+            if count == 3:
+                break
         button.click()
         # time.sleep(5)
 
@@ -71,8 +83,9 @@ try:
 
     # driver.quit()
 finally:
-    # Thêm code lưu data sang dataframe ở đây
-    data = {'comment': comment, 'variation': variation, 'datetime': datetime, 'rating': rating}
-    df = pd.DataFrame(data)
-    df.to_csv('son_review.csv', encoding='utf-8', index=False)
     driver.quit()
+
+# Thêm code lưu data sang dataframe ở đây
+data = {'comment': comment, 'variation': variation, 'datetime': datetime, 'rating': rating}
+df = pd.DataFrame(data)
+df.to_csv('son_review.csv', encoding='utf-8', index=False)
