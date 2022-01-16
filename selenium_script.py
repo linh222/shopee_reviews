@@ -19,14 +19,14 @@ variation = []
 rating = []
 datetime = []
 tag_name = []
-n = 3  # number of page to load, 6 comments each page
+n = 100  # number of page to load, 6 comments each page
 try:
 
     for i in range(n):
 
         # load page
-        time.sleep(5)
         if i == 0:
+            time.sleep(5)
             driver.execute_script("window.scrollTo(0, window.scrollY + 4200)")
             time.sleep(3)
             driver.execute_script("window.scrollTo(0, window.scrollY + 2200)")
@@ -34,7 +34,7 @@ try:
             rating_filter = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@class = 'product-rating-overview__filters']"))
             )
-            print(rating_filter.text)
+
             button = rating_filter.find_element(By.XPATH, ".//div[starts-with(text(), 'Có Bình luận')]")
             button.click()
         else:
@@ -62,7 +62,7 @@ try:
         # next page
         button = driver.find_element(By.XPATH, "//button[@class='shopee-icon-button shopee-icon-button--right ']")
         button.click()
-        time.sleep(5)
+        # time.sleep(5)
 
         if (i % 1000) == 0:
             data = {'comment': comment, 'variation': variation, 'datetime': datetime, 'rating': rating}
