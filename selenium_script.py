@@ -11,8 +11,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get(
-    'https://shopee.vn/product/9277307/2288984704?smtt=0.31320430-1642307124.9&fbclid'
-    '=IwAR2ImR10gU6NF_QyV1CNhwptBh57LogiebxvYj3LHdIsYthYFrrAk1rGP-Q '
+    'https://shopee.vn/Son-Kem-Perfect-Diary-M%C3%A0u-L%C3%AC-T%C3%B4ng-M%C3%A0u-C%E1%BB%95-%C4%90i%E1%BB%83n-L%C3'
+    '%A2u-Tr%C3%B4i-2.5g-i.277411443.7254565873?sp_atk=a68e6490-46b2-4da8-9f26-affa04027d69 '
 )
 
 comment = []
@@ -79,6 +79,8 @@ try:
         if (i % 1000) == 0:
             data = {'comment': comment, 'variation': variation, 'datetime': datetime, 'rating': rating}
             df = pd.DataFrame(data)
+            df['product_name'] = driver.find_element(By.CLASS_NAME, '_3g8My-').text
+            df['shop_name'] = driver.find_element(By.CLASS_NAME, '_1wVLAc').text
             df.to_csv('son_review.csv', encoding='utf-8', index=False)
 
     # driver.quit()
@@ -88,4 +90,6 @@ finally:
 # Thêm code lưu data sang dataframe ở đây
 data = {'comment': comment, 'variation': variation, 'datetime': datetime, 'rating': rating}
 df = pd.DataFrame(data)
+df['product_name'] = driver.find_element(By.CLASS_NAME, '_3g8My-').text
+df['shop_name'] = driver.find_element(By.CLASS_NAME, '_1wVLAc').text
 df.to_csv('son_review.csv', encoding='utf-8', index=False)
